@@ -1,0 +1,1314 @@
+//These are import statements, bringing in necessary packagaes for GUI components and scripting
+import java.awt.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.swing.*;
+import java.awt.event.*;
+
+//Here we see inheritance as class Scientific calculator extends JFrame
+//we also see abstraction in that class Scientific calculator implemenrs Action Listener interface
+public class ScientificCalculator extends JFrame implements ActionListener {
+    //declaration of variables, and initialization of values
+    public JTextField tfield;
+    public double temp, temp1, result, a;
+    public static double m1, m2;
+    public int k = 1, x = 0, y = 0, z = 0;
+    public char ch;
+    //Declaration of buttons for digits, operators, and functions;
+    JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, zero, clr, pow2, pow3, powy, exp, exponential, ee, pi,
+            fac, sin, cos, tan, plus, min, div, log, log10, rec, mul, eq, addSub, dot, mr, mc, mp,
+            mm, sqrt, cbrt, yrootx, percent, tenPowX, openBracket, closeBracket, secondButton, sinh, cosh, tanh,
+            rand,radButton, exitButton, maximizeButton, minimizeButton,zero1;
+    ScientificCalculator frame;
+    //encapsulation by using access modifiers.
+    JPanel textPanel, buttonpanel;
+    private boolean radButtonPressed = false;
+    private boolean secondButtonPressed = false;
+    boolean isSecondFunction = false;
+    boolean isRadiansMode = true;
+    StringBuilder expression = new StringBuilder();
+
+    //scientific calculator constructor
+    ScientificCalculator() {
+        //creation of JPanel  - Allows components to be added to it and to be organized.
+        //creation of textPanel- where texts entered by a user will be declared
+        setLayout(new BorderLayout());
+        JPanel textpanel = new JPanel();
+        textpanel.setBackground(Color.black);
+        textpanel.setLayout(new BorderLayout());
+
+        //Creation of JTextfield which allows a user to enter data from the keyboard.
+        tfield = new JTextField(null, 60);
+        Font textFieldFont = new Font("Open Sans", Font.PLAIN, 80);
+        tfield.setFont(textFieldFont);
+        tfield.setBackground(new Color(50, 50, 47, 255));
+        tfield.setForeground(Color.WHITE);
+        tfield.setPreferredSize(new Dimension(tfield.getPreferredSize().width, 100));
+        tfield.setHorizontalAlignment(SwingConstants.RIGHT);
+        tfield.setBorder(null);
+
+        //Creation of buttonpanel - where the buttons will be added.
+        buttonpanel = new JPanel();
+        buttonpanel.setLayout(new GridLayout(5, 10, 0, 0));
+        buttonpanel.setBackground(new Color(70, 69, 67, 255));
+
+        openBracket = new JButton("(");
+        openBracket.setBackground(new Color(70, 69, 67, 255));
+        openBracket.setForeground(Color.white);
+        openBracket.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        openBracket.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        openBracket.setFocusable(false);
+        buttonpanel.add(openBracket);
+        openBracket.addActionListener(this);
+
+        closeBracket = new JButton(")");
+        closeBracket.setBackground(new Color(70, 69, 67, 255));
+        closeBracket.setForeground(Color.white);
+        closeBracket.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        closeBracket.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        closeBracket.setFocusable(false);
+        buttonpanel.add(closeBracket);
+        closeBracket.addActionListener(this);
+
+        //mc (memory clear)button -Clears the content stored in the memory register
+        mc = new JButton("mc");
+        mc.setBackground(new Color(70, 69, 67, 255));
+        mc.setForeground(Color.white);
+        mc.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        mc.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        mc.setFocusable(false);
+        buttonpanel.add(mc);
+        mc.addActionListener(this);
+
+        //m+ - memory add - Adds the currently displayed value to the value already stored in the memory register.
+        mp = new JButton("m+");
+        mp.setBackground(new Color(70, 69, 67, 255));
+        mp.setForeground(Color.white);
+        mp.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        mp.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        mp.setFocusable(false);
+        buttonpanel.add(mp);
+        mp.addActionListener(this);
+
+        //m- (Memory Subtract): Subtracts the currently displayed value from the value stored in the memory register.
+        mm = new JButton("m-");
+        mm.setBackground(new Color(70, 69, 67, 255));
+        mm.setForeground(Color.white);
+        mm.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        mm.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        mm.setFocusable(false);
+        buttonpanel.add(mm);
+        mm.addActionListener(this);
+
+        //mr  (Memory Recall): Retrieves the value stored in the memory register and displays it on the calculator screen.
+        mr = new JButton("mr");
+        mr.setBackground(new Color(70, 69, 67, 255));
+        mr.setForeground(Color.white);
+        mr.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        mr.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        mr.setFocusable(false);
+        buttonpanel.add(mr);
+        mr.addActionListener(this);
+
+        //C (Clear): Clears the current input or calculation. If you are in the middle of entering a number or performing a calculation, pressing the "C" button will clear the display, allowing you to start fresh.
+        clr = new JButton("C");
+        clr.setBackground(new Color(70, 69, 67, 255));
+        clr.setForeground(Color.white);
+        clr.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        clr.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        clr.setFocusable(false);
+        buttonpanel.add(clr);
+        clr.addActionListener(this);
+
+        //This button is used to change the sign of the number currently displayed on the calculator screen. If the displayed number is positive, pressing "+/-" will change it to negative, and vice versa.
+        addSub = new JButton("+/-");
+        addSub.setBackground(new Color(70, 69, 67, 255));
+        addSub.setForeground(Color.white);
+        addSub.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        addSub.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        addSub.setFocusable(false);
+        buttonpanel.add(addSub);
+        addSub.addActionListener(this);
+
+        //Convert to percentage
+        percent = new JButton("%");
+        percent.setBackground(new Color(70, 69, 67, 255));
+        percent.setForeground(Color.white);
+        percent.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        percent.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        percent.setFocusable(false);
+        buttonpanel.add(percent);
+        percent.addActionListener(this);
+
+        //Division operator
+        div = new JButton("÷");
+        div.setBackground(new Color(255, 139, 10, 255));
+        div.setForeground(Color.white);
+        div.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        div.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        div.setFocusable(false);
+        div.addActionListener(this);
+        buttonpanel.add(div);
+
+        //serves as a modifier key that allows access to additional functions or secondary operations on certain keys
+        secondButton = new JButton("<html>2<sup>nd</sup></html>");
+        secondButton.setBackground(new Color(70, 69, 67, 255));
+        secondButton.setForeground(Color.white);
+        secondButton.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        secondButton.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        secondButton.setFocusable(false);
+        buttonpanel.add(secondButton);
+        secondButton.addActionListener(this);
+
+        //calculates the square of a number entered
+        pow2 = new JButton("X²");
+        pow2.setBackground(new Color(70, 69, 67, 255));
+        pow2.setForeground(Color.white);
+        pow2.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        pow2.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        pow2.setFocusable(false);
+        buttonpanel.add(pow2);
+        pow2.addActionListener(this);
+
+        //Calculates the cube of a number entered.
+        pow3 = new JButton("X³");
+        pow3.setBackground(new Color(70, 69, 67, 255));
+        pow3.setForeground(Color.white);
+        pow3.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        pow3.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        pow3.setFocusable(false);
+        //pow3.setContentAreaFilled(false);
+        buttonpanel.add(pow3);
+        pow3.addActionListener(this);
+
+        //calcuates the x(the number entered by a user)^ y(The power entered)
+        powy = new JButton("<html>X<sup>y</sup></html>");
+        powy.setBackground(new Color(70, 69, 67, 255));
+        powy.setForeground(Color.white);
+        powy.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        powy.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        powy.setFocusable(false);
+        buttonpanel.add(powy);
+        powy.addActionListener(this);
+
+        // represents the exponential function with the base e
+        exp = new JButton("<html>e<sup>x</sup></html>");
+        exp.setBackground(new Color(70, 69, 67, 255));
+        exp.setForeground(Color.white);
+        exp.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        exp.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        exp.setFocusable(false);
+        exp.addActionListener(this);
+        buttonpanel.add(exp);
+
+        // performing calculations involving powers of 10,
+        tenPowX = new JButton("<html>10<sup>x</sup></html>");
+        tenPowX.setBackground(new Color(70, 69, 67, 255));
+        tenPowX.setForeground(Color.white);
+        tenPowX.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        tenPowX.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        tenPowX.setFocusable(false);
+        tenPowX.addActionListener(this);
+        buttonpanel.add(tenPowX);
+
+        b7 = new JButton("7");
+        b7.setBackground(new Color(100, 100, 98));
+        b7.setForeground(Color.white);
+        b7.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b7.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b7.setFocusable(false);
+        buttonpanel.add(b7);
+        b7.addActionListener(this);
+
+        b8 = new JButton("8");
+        buttonpanel.add(b8);
+        b8.setBackground(new Color(100, 100, 98));
+        b8.setForeground(Color.white);
+        b8.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b8.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b8.setFocusable(false);
+        b8.addActionListener(this);
+
+        b9 = new JButton("9");
+        b9.setBackground(new Color(100, 100, 98));
+        b9.setForeground(Color.white);
+        b9.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b9.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b9.setFocusable(false);
+        buttonpanel.add(b9);
+        b9.addActionListener(this);
+
+        mul = new JButton("X");
+        mul.setBackground(new Color(255, 139, 9, 255));
+        mul.setForeground(Color.white);
+        mul.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        mul.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        mul.setFocusable(false);
+        buttonpanel.add(mul);
+        mul.addActionListener(this);
+
+        //Find the inverse of the number
+        rec = new JButton("<html><font size='5'><sup>1</sup></font><font size='5'>/</font><font size='5'><sub>x</sub></font></html>");
+        rec.setBackground(new Color(70, 69, 67, 255));
+        rec.setForeground(Color.white);
+        rec.setFont(new Font("San Francisco", Font.BOLD, 20));
+        rec.setFocusable(false);
+        rec.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        buttonpanel.add(rec);
+        rec.addActionListener(this);
+
+        //Find the square root.
+        sqrt = new JButton("√x");
+        sqrt.setBackground(new Color(70, 69, 67, 255));
+        sqrt.setForeground(Color.white);
+        sqrt.setFont(new Font("Serif", Font.PLAIN, 20));
+        sqrt.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        sqrt.setFocusable(false);
+        buttonpanel.add(sqrt);
+        sqrt.addActionListener(this);
+
+        //cube root
+        cbrt = new JButton("∛x");
+        cbrt.setBackground(new Color(70, 69, 67, 255));
+        cbrt.setForeground(Color.white);
+        cbrt.setFont(new Font("Serif", Font.PLAIN, 20));
+        cbrt.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        cbrt.setFocusable(false);
+        buttonpanel.add(cbrt);
+        cbrt.addActionListener(this);
+
+        //y root x
+        yrootx = new JButton("y√x");
+        yrootx.setBackground(new Color(70, 69, 67, 255));
+        yrootx.setForeground(Color.white);
+        yrootx.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        yrootx.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        yrootx.setFocusable(false);
+        buttonpanel.add(yrootx);
+        yrootx.addActionListener(this);
+
+
+        log = new JButton("ln");
+        log.setBackground(new Color(70, 69, 67, 255));
+        log.setForeground(Color.white);
+        log.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        log.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        log.setFocusable(false);
+        buttonpanel.add(log);
+        log.addActionListener(this);
+
+        //log to base 10
+        log10 = new JButton("<html>log<sub>10</sup></html>");
+        log10.setBackground(new Color(70, 69, 67, 255));
+        log10.setForeground(Color.white);
+        log.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        log10.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        log10.setFocusable(false);
+        buttonpanel.add(log10);
+        log10.addActionListener(this);
+
+        b4 = new JButton("4");
+        b4.setBackground(new Color(100, 100, 98));
+        b4.setForeground(Color.white);
+        b4.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b4.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b4.setFocusable(false);
+        buttonpanel.add(b4);
+        b4.addActionListener(this);
+
+        b5 = new JButton("5");
+        b5.setBackground(new Color(100, 100, 98));
+        b5.setForeground(Color.white);
+        b5.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b5.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b5.setFocusable(false);
+        buttonpanel.add(b5);
+        b5.addActionListener(this);
+
+        b6 = new JButton("6");
+        b6.setBackground(new Color(100, 100, 98));
+        b6.setForeground(Color.white);
+        b6.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b6.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b6.setFocusable(false);
+        buttonpanel.add(b6);
+        b6.addActionListener(this);
+
+        min = new JButton("-");
+        min.setBackground(new Color(255, 139, 9, 255));
+        min.setForeground(Color.white);
+        min.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        min.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        min.setFocusable(false);
+        buttonpanel.add(min);
+        min.addActionListener(this);
+
+        //factorial
+        fac = new JButton("x!");
+        fac.setBackground(new Color(70, 69, 67, 255));
+        fac.setForeground(Color.white);
+        fac.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        fac.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        fac.addActionListener(this);
+        buttonpanel.add(fac);
+
+        sin = new JButton("sin");
+        sin.setBackground(new Color(70, 69, 67, 255));
+        sin.setForeground(Color.white);
+        sin.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        sin.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        sin.setFocusable(false);
+        buttonpanel.add(sin);
+        sin.addActionListener(this);
+
+        cos = new JButton("cos");
+        cos.setBackground(new Color(70, 69, 67, 255));
+        cos.setForeground(Color.white);
+        cos.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        cos.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        cos.setFocusable(false);
+        buttonpanel.add(cos);
+        cos.addActionListener(this);
+
+        tan = new JButton("tan");
+        tan.setBackground(new Color(70, 69, 67, 255));
+        tan.setForeground(Color.white);
+        tan.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        tan.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        tan.setFocusable(false);
+        buttonpanel.add(tan);
+        tan.addActionListener(this);
+
+        //scientific notation
+        exponential = new JButton("e");
+        exponential.setBackground(new Color(70, 69, 67, 255));
+        exponential.setForeground(Color.white);
+        exponential.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        exponential.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        exponential.setFocusable(false);
+        exponential.addActionListener(this);
+        buttonpanel.add(exponential);
+
+        //It allows you to enter numbers in a compact form where a number is multiplied by a power of 10.
+        ee = new JButton("EE");
+        ee.setBackground(new Color(70, 69, 67, 255));
+        ee.setForeground(Color.white);
+        ee.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        ee.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        ee.setFocusable(false);
+        buttonpanel.add(ee);
+        ee.addActionListener(this);
+
+        b1 = new JButton("1");
+        b1.setBackground(new Color(100, 100, 98));
+        b1.setForeground(Color.white);
+        b1.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b1.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b1.setFocusable(false);
+        buttonpanel.add(b1);
+        b1.addActionListener(this);
+
+        b2 = new JButton("2");
+        b2.setBackground(new Color(100, 100, 98));
+        b2.setForeground(Color.white);
+        b2.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b2.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b2.setFocusable(false);
+        buttonpanel.add(b2);
+        b2.addActionListener(this);
+
+        b3 = new JButton("3");
+        b3.setBackground(new Color(100, 100, 98));
+        b3.setForeground(Color.white);
+        b3.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        b3.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        b3.setFocusable(false);
+        buttonpanel.add(b3);
+        b3.addActionListener(this);
+
+        plus = new JButton("+");
+        plus.setBackground(new Color(255, 139, 9, 255));
+        plus.setForeground(Color.white);
+        plus.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        plus.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        plus.setFocusable(false);
+        buttonpanel.add(plus);
+        plus.addActionListener(this);
+
+        //Perform trigonometric functions in radians
+        radButton = new JButton("Rad");
+        radButton.setBackground(new Color(70, 69, 67, 255));
+        radButton.setForeground(Color.white);
+        radButton.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        radButton.setFocusable(false);
+        buttonpanel.add(radButton);
+        radButton.addActionListener(this);
+
+        //hyperbolic sine function
+        sinh = new JButton("sinh");
+        sinh.setBackground(new Color(70, 69, 67, 255));
+        sinh.setForeground(Color.white);
+        sinh.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        sinh.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        sinh.setFocusable(false);
+        buttonpanel.add(sinh);
+        sinh.addActionListener(this);
+
+        //hyperbolic cosine
+        cosh = new JButton("cosh");
+        cosh.setBackground(new Color(70, 69, 67, 255));
+        cosh.setForeground(Color.white);
+        cosh.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        cosh.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        cosh.setFocusable(false);
+        buttonpanel.add(cosh);
+        cosh.addActionListener(this);
+
+        //hyperbolic tangent function
+        tanh = new JButton("tanh");
+        tanh.setBackground(new Color(70, 69, 67, 255));
+        tanh.setForeground(Color.white);
+        tanh.setFont(new Font("San Francisco", Font.PLAIN, 20));
+        tanh.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        tanh.setFocusable(false);
+        buttonpanel.add(tanh);
+        tanh.addActionListener(this);
+
+        pi = new JButton("π");
+        pi.setForeground(Color.white);
+        pi.setBackground(new Color(70, 69, 67, 255));
+        pi.setForeground(Color.white);
+        pi.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        pi.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        pi.addActionListener(this);
+        buttonpanel.add(pi);
+
+        //outputs on the textfield a random number that is between 0 and 1
+        rand = new JButton("Rand");
+        rand.setBackground(new Color(70, 69, 67, 255));
+        rand.setForeground(Color.white);
+        rand.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        rand.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        rand.setFocusable(false);
+        rand.addActionListener(this);
+        buttonpanel.add(rand);
+
+        zero = new JButton("");
+        ImageIcon icon5 = new ImageIcon("zero.jpg");
+        zero.setIcon(icon5);
+        zero.setVerticalTextPosition(SwingConstants.TOP);
+        zero.setHorizontalTextPosition(SwingConstants.LEFT);
+        zero.setBackground(new Color(100, 100, 98));
+        zero.setForeground(Color.white);
+        zero.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        zero.setBorder(BorderFactory.createEmptyBorder());
+        buttonpanel.add(zero);
+        zero.addActionListener(this);
+
+
+        zero1 = new JButton("");
+        ImageIcon icon6 = new ImageIcon("zero2.jpg");
+        zero1.setIcon(icon6);
+        zero1.setBackground(new Color(100, 100, 98));
+        zero1.setVerticalTextPosition(SwingConstants.TOP);
+        zero1.setHorizontalTextPosition(SwingConstants.RIGHT);
+        zero1.setForeground(Color.white);
+        zero1.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        zero1.setBorder(BorderFactory.createEmptyBorder());
+        buttonpanel.add(zero1);
+        zero1.addActionListener(this);
+
+        dot = new JButton(".");
+        dot.setBackground(new Color(100, 100, 98));
+        dot.setForeground(Color.white);
+        dot.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        dot.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        buttonpanel.add(dot);
+        dot.addActionListener(this);
+
+        eq = new JButton("=");
+        eq.setBackground(new Color(255, 139, 9, 255));
+        eq.setForeground(Color.white);
+        eq.setFont(new Font("Century Gothic", Font.PLAIN, 20));
+        eq.setBorder(BorderFactory.createLineBorder(new Color(57, 57, 55, 255), 1));
+        buttonpanel.add(eq);
+        eq.addActionListener(this);
+
+
+        JPanel Close = new JPanel();
+        Close.setPreferredSize(new Dimension(918, 30));
+        Close.setLayout(new BorderLayout(0, 0));
+        Close.setBackground(new Color(50, 50, 47, 255));
+
+        JPanel SizeButtons = new JPanel();
+        SizeButtons.setPreferredSize(new Dimension(90, 30));
+        SizeButtons.setBackground(new Color(50, 50, 47, 255));
+        SizeButtons.setBorder(BorderFactory.createEmptyBorder());
+        SizeButtons.setLayout(new GridLayout(1, 3, 0, 0));
+
+
+        exitButton = new JButton();
+        ImageIcon icon = new ImageIcon("RED BUTTON.jpg");
+        exitButton.setIcon(icon);
+        exitButton.setFocusable(false);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setBackground(new Color(50, 50, 47, 255));
+        exitButton.setBorder(BorderFactory.createEmptyBorder());
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            //Method overriding(polymorphism)
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        maximizeButton = new JButton();
+        maximizeButton.setBackground(new Color(50, 50, 47, 255));
+        maximizeButton.setContentAreaFilled(false);
+        maximizeButton.setPreferredSize(new Dimension(40, 40));
+        ImageIcon icon1 = new ImageIcon("Orange colour.jpg");
+        maximizeButton.setIcon(icon1);
+        maximizeButton.setFocusable(false);
+        maximizeButton.setBorder(BorderFactory.createEmptyBorder());
+        maximizeButton.addActionListener(new ActionListener() {
+            @Override
+            //Method overriding(polymorphism)
+            public void actionPerformed(ActionEvent e) {
+                if (getExtendedState() == NORMAL)
+                    setExtendedState(MAXIMIZED_BOTH);
+                else
+                    setExtendedState(NORMAL);
+            }
+        });
+
+        minimizeButton = new JButton();
+        minimizeButton.setBackground(new Color(50, 50, 47, 255));
+        ImageIcon icon3 = new ImageIcon("Minimize Button.jpg");
+        minimizeButton.setIcon(icon3);
+        minimizeButton.setFocusable(false);
+        minimizeButton.setContentAreaFilled(false);
+        minimizeButton.setBorder(BorderFactory.createEmptyBorder());
+        minimizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                setState(ICONIFIED);
+            }
+        });
+
+        textpanel.add(tfield);
+        SizeButtons.add(exitButton);
+        SizeButtons.add(maximizeButton);
+        SizeButtons.add(minimizeButton);
+
+        add("South", buttonpanel);
+        add("Center", textpanel);
+        add("North", Close);
+
+        Close.setPreferredSize(new Dimension(918, 30));
+        Close.add(SizeButtons, BorderLayout.WEST);
+        buttonpanel.setPreferredSize(new Dimension(918, 416));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.setTitle("ScientificCalculator");
+        this.setBackground(new Color(70,69,67,255));
+        this.setSize(977,551);
+        this.setUndecorated(true);
+        this.setVisible(true);
+        this.setLocationRelativeTo(null);
+    }
+
+
+    public void actionPerformed(ActionEvent e) {
+        String s = e.getActionCommand();
+        //The purpose of ActionListeners is to capture and respond to user interactions with these components e.g buttons and perform actions based on the action perofrmed method set
+
+        if (s.equals("mc")) {
+            m1 = 0;
+            tfield.setText("");
+        }
+
+        if (s.equals("m+")) {
+            if (k == 1) {
+                m1 = Double.parseDouble(tfield.getText());
+                k++;
+            } else {
+                m1 += Double.parseDouble(tfield.getText());
+                tfield.setText("" + m1);
+            }
+        }
+
+        if (s.equals("m-")) {
+            if (k == 1) {
+                m1 = Double.parseDouble(tfield.getText());
+                k++;
+            } else {
+                m1 -= Double.parseDouble(tfield.getText());
+                tfield.setText("" + m1);
+            }
+        }
+
+        if (s.equals("mr")) {
+            tfield.setText("");
+            tfield.setText(tfield.getText() + m1);
+        }
+
+        if (s.equals("C")) {
+            tfield.setText("");
+            x = 0;
+            y = 0;
+            z = 0;
+            radButton.setText("Rad");
+        }
+
+        if (s.equals("+/-")) {
+            if (x == 0) {
+                tfield.setText("-" + tfield.getText());
+                x = 1;
+            } else {
+                tfield.setText("+" + tfield.getText());
+            }
+        }
+
+        if (s.equals("%")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Double.parseDouble(tfield.getText()) / 100.0;
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("÷")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+                temp = 1;
+                ch = '/';
+            } else {
+                x = 0;
+                y = 0;
+                temp = Double.parseDouble(tfield.getText());
+                ch = '/';
+                tfield.setText("");
+            }
+
+            if (s.equals("(")) {
+                tfield.setText(tfield.getText() + "(");
+                expression.append("(");
+            }
+
+            if (s.equals(")")) {
+                tfield.setText(tfield.getText() + ")");
+                expression.append(")");
+            }
+            tfield.requestFocus();
+        }
+
+        if (s.equals("X²")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.pow(Double.parseDouble(tfield.getText()), 2);
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("X³")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.pow(Double.parseDouble(tfield.getText()), 3);
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("<html>X<sup>y</sup></html>")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                String power = JOptionPane.showInputDialog("Enter the power (y):");
+                if (power != null && !power.isEmpty()) {
+                    double y = Double.parseDouble(power);
+                    double x = Double.parseDouble(tfield.getText());
+                    double result = Math.pow(x, y);
+                    tfield.setText(Double.toString(result));
+                } else {
+                    tfield.setText("");
+                }
+            }
+        }
+
+        if (s.equals("<html>e<sup>x</sup></html>")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.exp(Double.parseDouble(tfield.getText()));
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("<html>10<sup>x</sup></html>")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                double result = Math.pow(10, x);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("7")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "7");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "7");
+                z = 0;
+            }
+        }
+
+        if (s.equals("8")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "8");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "8");
+                z = 0;
+            }
+        }
+
+        if (s.equals("9")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "9");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "9");
+                z = 0;
+            }
+        }
+
+        if (s.equals("X")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+                temp = 1;
+                ch = '*';
+            } else {
+                x = 0;
+                y = 0;
+                temp = Double.parseDouble(tfield.getText());
+                ch = '*';
+                tfield.setText("");
+            }
+            if (s.equals("(")) {
+                tfield.setText(tfield.getText() + "(");
+                expression.append("(");
+            }
+            if (s.equals(")")) {
+                tfield.setText(tfield.getText() + ")");
+                expression.append(")");
+            }
+        }
+
+        if (s.equals("<html><font size='5'><sup>1</sup></font><font size='5'>/</font><font size='5'><sub>x</sub></font></html>")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = 1 / Double.parseDouble(tfield.getText());
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("√x")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.sqrt(Double.parseDouble(tfield.getText()));
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("∛x")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.cbrt(Double.parseDouble(tfield.getText()));
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("y√x")) {
+            if (!tfield.getText().equals("")) {
+                String root = JOptionPane.showInputDialog("Enter the root (y):");
+                if (root != null && !root.isEmpty()) {
+                    double y = Double.parseDouble(root);
+                    double x = Double.parseDouble(tfield.getText());
+                    double result = Math.pow(x, 1 / y);
+                    tfield.setText(Double.toString(result));
+                } else {
+                    tfield.setText("");
+                }
+            }
+        }
+
+        if (s.equals("ln")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = Math.log(Double.parseDouble(tfield.getText()));
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+
+        if (s.equals("<html>log<sub>10</sup></html>")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                double result = Math.log10(x);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("4")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "4");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "4");
+                z = 0;
+            }
+        }
+
+        if (s.equals("5")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "5");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "5");
+                z = 0;
+            }
+        }
+
+        if (s.equals("6")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "6");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "6");
+                z = 0;
+            }
+        }
+
+        if (s.equals("-")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+                temp = 0;
+                ch = '-';
+            } else {
+                x = 0;
+                y = 0;
+                temp = Double.parseDouble(tfield.getText());
+                tfield.setText("");
+                ch = '-';
+            }
+            if (s.equals("(")) {
+                tfield.setText(tfield.getText() + "(");
+                expression.append("(");
+            }
+            if (s.equals(")")) {
+                tfield.setText(tfield.getText() + ")");
+                expression.append(")");
+            }
+
+            tfield.requestFocus();
+        }
+
+
+        if (s.equals("x!")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                a = fact(Double.parseDouble(tfield.getText()));
+                tfield.setText("");
+                tfield.setText(tfield.getText() + a);
+            }
+        }
+        //2nd button logic - allows user to access the primary function of a specific button
+        if (s.equals("<html>2<sup>nd</sup></html>")) {
+            isSecondFunction = !isSecondFunction;
+            secondButtonPressed = true;
+            if (isSecondFunction) {
+                sin.setText("asin");
+                cos.setText("acos");
+                tan.setText("atan");
+                exp.setText("<html>y<sup>x</sup></html>");
+                tenPowX.setText("<html>2<sup>x</sup></html>");
+                log.setText("<html>log<sub>y</sup></html>");
+                log10.setText("<html>log<sub>2</sup></html>");
+                sinh.setText("<html>sinh<sup> -1</sup></html>");
+                cosh.setText("<html>cosh<sup> -1</sup></html>");
+                tanh.setText("<html>tanh<sup> -1</sup></html>");
+
+            } else {
+                sin.setText("sin");
+                cos.setText("cos");
+                tan.setText("tan");
+                exp.setText("<html>e<sup>x</sup></html>");
+                tenPowX.setText("<html>10<sup>x</sup></html>");
+                log10.setText("<html>log<sub>10</sup></html>");
+                log.setText("ln");
+                cosh.setText("cosh");
+                sinh.setText("sinh");
+                tanh.setText("tanh");
+            }
+            return;
+        }
+        if (s.equals("asin")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.toDegrees(Math.asin(angle)) : Math.sin(Math.toRadians(angle));
+            tfield.setText(Double.toString(result));
+        }
+
+        if (s.equals("acos")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.toDegrees(Math.acos(angle)) : Math.cos(Math.toRadians(angle));
+            tfield.setText(Double.toString(result));
+        }
+        if (s.equals("atan")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.toDegrees(Math.atan(angle)) : Math.tan(Math.toRadians(angle));
+            tfield.setText(Double.toString(result));
+        }
+
+        if (s.equals("<html>y<sup>x</sup></html>")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                String power = JOptionPane.showInputDialog("Enter the power (x):");
+                if (power != null && !power.isEmpty()) {
+                    double x = Double.parseDouble(power);
+                    double y = Double.parseDouble(tfield.getText());
+                    double result = Math.pow(y,x);
+                    tfield.setText(Double.toString(result));
+                } else {
+                    tfield.setText("");
+                }
+            }
+        }
+        if (s.equals("<html>2<sup>x</sup></html>")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                double result = Math.pow(2, x);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("log₁₀")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                double result = Math.log10(x);
+                tfield.setText(Double.toString(result));
+            }
+        }
+        if (s.equals("<html>log<sub>2</sup></html>")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                double result = Math.log(x) / Math.log(2);
+                tfield.setText(Double.toString(result));
+            }
+        }
+        if (s.equals("<html>log<sub>y</sup></html>")) {
+            if (!tfield.getText().equals("")) {
+                double x = Double.parseDouble(tfield.getText());
+                String logf = JOptionPane.showInputDialog("Enter the base(y)");
+                double y = Double.parseDouble(logf);
+                double result = Math.log(x) / Math.log(y);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("<html>sinh<sup> -1</sup></html>")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.log(angle + Math.sqrt(angle * angle + 1)) : Math.sinh(angle);
+            tfield.setText(Double.toString(result));
+        }
+        if (s.equals("<html>cosh<sup> -1</sup></html>")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.log(angle + Math.sqrt(angle * angle + 1)) : Math.cosh(angle);
+            tfield.setText(Double.toString(result));
+        }
+
+        if (s.equals("<html>tanh<sup> -1</sup></html>")) {
+            double angle = Double.parseDouble(tfield.getText());
+            double result = isSecondFunction ? Math.log(angle + Math.sqrt(angle * angle + 1)) : Math.tanh(angle);
+            tfield.setText(Double.toString(result));
+        }
+
+        if (s.equals("Rad")) {
+            isRadiansMode = !isRadiansMode; // Toggle the radians mode
+            radButtonPressed = true; // Set the flag to true
+            if (isRadiansMode) {
+                return;
+            }
+        }
+        // Check the radians mode and adjust trigonometric functions accordingly
+        if (s.equals("sin")) {
+            // Check if Rad button has been pressed before sin
+            if (radButtonPressed && !tfield.getText().equals("")) {
+                double angle = Double.parseDouble(tfield.getText());
+                double result = isRadiansMode ? Math.sin(angle) : Math.sin(Math.toRadians(angle));
+                tfield.setText(Double.toString(result));
+            }
+            else {
+                if (!tfield.getText().equals("")) {
+                    double angle = Double.parseDouble(tfield.getText());
+                    double result = Math.sin(Math.toRadians(angle));//angle entered is in degrees
+                    tfield.setText(Double.toString(result));
+
+                }
+            }
+            // Reset the flag after processing sin button
+            radButtonPressed = false;
+            secondButtonPressed = false;
+
+        }
+
+        if (s.equals("tan")) {
+            // Check if Rad button has been pressed before tan
+            if (radButtonPressed && !tfield.getText().equals("")) {
+                double angle = Double.parseDouble(tfield.getText());
+                double result = isRadiansMode ? Math.tan(angle) : Math.tan(Math.toRadians(angle));
+                tfield.setText(Double.toString(result));
+            }
+
+            else {
+                if (!tfield.getText().equals("")) {
+                    double angle = Double.parseDouble(tfield.getText());
+                    double result = Math.tan(Math.toRadians(angle));//angle entered is in degrees
+                    tfield.setText(Double.toString(result));
+
+                }
+            }
+
+            // Reset the flag after processing tan button
+            radButtonPressed = false;
+            secondButtonPressed = false;
+        }
+
+        if (s.equals("cos")) {
+            // Check if Rad button has been pressed before cos
+            if (radButtonPressed && !tfield.getText().equals("")) {
+                double angle = Double.parseDouble(tfield.getText());
+                double result = isRadiansMode ? Math.cos(angle) : Math.cos(Math.toRadians(angle));
+                tfield.setText(Double.toString(result));
+            }
+
+            else {
+                if (!tfield.getText().equals("")) {
+                    double angle = Double.parseDouble(tfield.getText());
+                    double result = Math.cos(Math.toRadians(angle));//angle entered is in degrees
+                    tfield.setText(Double.toString(result));
+
+                }
+            }
+            // Reset the flag after processing cos button
+            radButtonPressed = false;
+            secondButtonPressed = false;
+        }
+
+        if (s.equals("e")) {
+            tfield.setText("");
+            tfield.setText(tfield.getText() + Math.E);
+        }
+
+        if (s.equals("EE")) {
+            String exponentInput = JOptionPane.showInputDialog("Enter the exponent (EE):");
+            if (exponentInput != null && !exponentInput.isEmpty()) {
+                double exponent = Double.parseDouble(exponentInput);
+                tfield.setText(tfield.getText() + "E" + exponent);
+            } else {
+                tfield.setText("");
+            }
+        }
+
+        if (s.equals("1")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "1");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "1");
+                z = 0;
+            }
+        }
+
+        if (s.equals("2")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "2");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "2");
+                z = 0;
+            }
+        }
+
+        if (s.equals("3")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "3");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "3");
+                z = 0;
+            }
+        }
+
+        if (s.equals("+")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+                temp = 0;
+                ch = '+';
+            } else {
+                temp = Double.parseDouble(tfield.getText());
+                tfield.setText("");
+                ch = '+';
+                y = 0;
+                x = 0;
+            }
+
+            if (s.equals("("))
+            {
+                tfield.setText(tfield.getText() + "(");
+                expression.append("(");
+            }
+            if (s.equals(")"))
+            {
+                tfield.setText(tfield.getText() + ")");
+                expression.append(")");
+            }
+
+            tfield.requestFocus();
+        }
+
+        if (s.equals("sinh")) {
+            if (!tfield.getText().equals("")) {
+                double value = Double.parseDouble(tfield.getText());
+                double result = isSecondFunction ? Math.sinh(value) : Math.sinh(value);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("tanh")) {
+            if (!tfield.getText().equals("")) {
+                double value = Double.parseDouble(tfield.getText());
+                double result = isSecondFunction ? Math.tanh(value) : Math.tanh(value);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("cosh")) {
+            if (!tfield.getText().equals("")) {
+                double value = Double.parseDouble(tfield.getText());
+                double result = isSecondFunction ? Math.cosh(value) : Math.cos(value);
+                tfield.setText(Double.toString(result));
+            }
+        }
+
+        if (s.equals("π")) {
+            tfield.setText("");
+            tfield.setText(tfield.getText() + Math.PI);
+        }
+
+        if (s.equals("Rand")) {
+            double randomValue = Math.random();
+            tfield.setText(Double.toString(randomValue));
+        }
+
+        if (s.equals("")) {
+            if (z == 0) {
+                tfield.setText(tfield.getText() + "0");
+            } else {
+                tfield.setText("");
+                tfield.setText(tfield.getText() + "0");
+                z = 0;
+            }
+        }
+
+        if (s.equals(".")) {
+            if (y == 0) {
+                tfield.setText(tfield.getText() + ".");
+                y = 1;
+            } else {
+                tfield.setText(tfield.getText());
+            }
+        }
+
+        if (s.equals("=")) {
+            if (tfield.getText().equals("")) {
+                tfield.setText("");
+            } else {
+                temp1 = Double.parseDouble(tfield.getText());
+                switch (ch) {
+                    case '+':
+                        result = temp + temp1;
+                        break;
+                    case '-':
+                        result = temp - temp1;
+                        break;
+                    case '/':
+                        result = temp / temp1;
+                        break;
+                    case '*':
+                        result = temp * temp1;
+                        break;
+                }
+                tfield.setText("");
+                tfield.setText(tfield.getText() + result);
+                z = 1;
+            }
+        }
+        if (s.equals("(")) {
+            tfield.setText(tfield.getText() + "(");
+            expression.append("(");
+        }
+        if (s.equals(")")) {
+            tfield.setText(tfield.getText() + ")");
+            expression.append(")");
+        }
+        //In this specific code snippet, the try block contains code that evaluates a mathematical expression using a ScriptEngine from the Java Scripting API. If an exception of type ScriptException occurs during the evaluation (for example, due to a syntax error in the mathematical expression), the code within the catch block will be executed. In this case, the catch block sets the text of the tfield (presumably a text field in a graphical user interface) to "Error."
+
+        if (s.equals("=")) {
+            if (!expression.toString().isEmpty()) {
+                try {
+                    ScriptEngineManager manager = new ScriptEngineManager();
+                    ScriptEngine engine = manager.getEngineByName("js");
+                    Object result = engine.eval(expression.toString());
+                    tfield.setText(result.toString());
+                } catch (ScriptException ex) {
+                    tfield.setText("Error");
+                }
+            }
+            z = 1;
+        }
+        tfield.requestFocus();
+    }
+
+    double fact(double x) {
+        int er = 0;
+        if (x < 0) {
+            er = 20;
+            return 0;
+        }
+        double i, s = 1;
+        for (i = 2; i <= x; i += 1.0)
+            s *= i;
+        return s;
+    }
+
+    public static void main(String args[]) {
+        ScientificCalculator frame = new ScientificCalculator();
+
+    }
+}
